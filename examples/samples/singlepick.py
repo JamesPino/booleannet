@@ -19,7 +19,7 @@ def simulation( trans ):
     "One simulation step will update the transition graph"
 
     # create the model
-    model = boolean2.Model( text=rules, mode='async')
+    model = boolean2.Model(text=rules, mode='async')
 
     # generates all states, set limit to a value to keep only the first that many states
     # when limit is a number it will take the first that many initial states

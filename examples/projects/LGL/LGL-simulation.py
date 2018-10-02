@@ -54,7 +54,7 @@ if __name__ == '__main__':
     # NODES  = 'Apoptosis STAT3 FasL Ras'.split()
     
     # this collects the state of all nodes 
-    NODES  = boolean2.all_nodes( text )
+    NODES  = boolean2.all_nodes(text)
 
     #
     # raise this for better curves (will take about 2 seconds per repeat)
@@ -68,20 +68,20 @@ if __name__ == '__main__':
     print '- starting simulation with REPEAT=%s, STEPS=%s' % (REPEAT, STEPS)
 
     # a single overexpressed node
-    mtext = boolean2.modify_states( text=text, turnon=['Stimuli'] )
+    mtext = boolean2.modify_states(text=text, turnon=['Stimuli'])
     avgs = run( text=mtext, repeat=REPEAT, nodes=NODES, steps=STEPS) 
     data.append( avgs )
 
     # multiple overexrpessed nodes
-    mtext = boolean2.modify_states( text=text, turnon=['Stimuli','Mcl1'] )
+    mtext = boolean2.modify_states(text=text, turnon=['Stimuli', 'Mcl1'])
     avgs = run( text=mtext, repeat=REPEAT, nodes=NODES, steps=STEPS) 
     data.append( avgs )
 
-    mtext = boolean2.modify_states( text=text, turnon=['Stimuli','sFas'] )
+    mtext = boolean2.modify_states(text=text, turnon=['Stimuli', 'sFas'])
     avgs = run( text=mtext, repeat=REPEAT, nodes=NODES, steps=STEPS) 
     data.append( avgs )
 
-    mtext = boolean2.modify_states( text=text, turnon=['Stimuli','Mcl1','sFas'] )
+    mtext = boolean2.modify_states(text=text, turnon=['Stimuli', 'Mcl1', 'sFas'])
     avgs = run( text=mtext, repeat=REPEAT, nodes=NODES, steps=STEPS) 
     data.append( avgs )
     

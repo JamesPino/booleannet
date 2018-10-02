@@ -5,9 +5,11 @@
 #
 # http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/496761
 #
-from UserDict import DictMixin
+# from collectiionsUserDict import DictMixin
+from collections import UserDict
 
-class odict(DictMixin):
+
+class odict(UserDict):
     """
     >>> o = odict()
     >>> o[2]=20 ; o[1]=10
@@ -34,20 +36,20 @@ class odict(DictMixin):
     """
     def __init__(self, **kwds):
         self._keys = []
-        self._data = {}
+        self.data = {}
         for key, value in kwds.items():
             self[key] = value
         
     def __setitem__(self, key, value):
-        if key not in self._data:
+        if key not in self.data:
             self._keys.append(key)
-        self._data[key] = value
+        self.data[key] = value
         
     def __getitem__(self, key):
-        return self._data[key]
+        return self.data[key]
     
     def __delitem__(self, key):
-        del self._data[key]
+        del self.data[key]
         self._keys.remove(key)
         
     def keys(self):
@@ -55,7 +57,7 @@ class odict(DictMixin):
     
     def copy(self):
         copyDict = odict()
-        copyDict._data = self._data.copy()
+        copyDict.data = self.data.copy()
         copyDict._keys = self._keys[:]
         return copyDict
 

@@ -42,7 +42,7 @@ class SyncTest( testbase.TestBase ):
         2: B* = A and B
         3: C* = not C
         """
-        model  = boolean2.Model( mode='sync', text=text )
+        model  = boolean2.Model(mode='sync', text=text)
         model.initialize( missing= util.false, defaults=dict(A=True, B=True) )
         model.iterate( steps=10 )
         self.EQ( model.first.A, True )
@@ -60,7 +60,7 @@ class SyncTest( testbase.TestBase ):
         2: B* = A and B
         3: C* = not C
         """
-        model  = boolean2.Model( mode='sync', text=text )
+        model  = boolean2.Model(mode='sync', text=text)
         model.initialize()
 
         model.iterate( steps=5 )

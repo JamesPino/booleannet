@@ -1,4 +1,5 @@
-import boolean2, pylab
+import boolean2
+import matplotlib.pyplot as plt
 
 text = """
 A = True
@@ -9,13 +10,12 @@ C = False
 3: C* = B
 """
 
-model = boolean2.Model( text=text, mode='plde' )
+model = boolean2.Model(text=text, mode='plde')
 model.initialize()
-model.iterate( fullt=7, steps=100 )
+model.iterate(fullt=7, steps=100)
 
-p1 = pylab.plot( model.data['A'] , 'ob-' )
-p2 = pylab.plot( model.data['B'] , 'sr-' )
-p3 = pylab.plot( model.data['C'] , '^g-' )
-pylab.legend( [p1,p2,p3], "A B C".split(), loc="best")
-
-pylab.show()
+plt.plot(model.data['A'], 'ob-', label='A')
+plt.plot(model.data['B'], 'sr-', label='B')
+plt.plot(model.data['C'], '^g-', label='C')
+plt.legend(loc=0)
+plt.show()

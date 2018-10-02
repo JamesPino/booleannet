@@ -5,9 +5,9 @@ from itertools import *
 # import path fixup
 sys.path.append( '..' )
 
-import boolean
-from boolean.functional import *
-
+import boolean2 as boolean
+# from boolean2.functional import *
+from functools import partial
 #
 # helper functions
 #
@@ -22,7 +22,7 @@ def get_states( mode, text, steps, missing=None):
     """
     Helper function to generate the states
     """
-    eng  = boolean.Model( mode=mode, text=text )
+    eng  = boolean2.Model(mode=mode, text=text)
     eng.initialize( missing=missing )
     eng.iterate( steps=steps )
     return eng.states
@@ -41,7 +41,7 @@ class EngineTest( unittest.TestCase ):
         2: B* = A and B
         3: C* = not C
         """
-        eng  = boolean.Model( mode='plde', text=text )
+        eng  = boolean2.Model(mode='plde', text=text)
         eng.initialize()
         eng.iterate( fullt=1, steps=10 )
         EQ( len(eng.data), 3)
@@ -59,8 +59,8 @@ class EngineTest( unittest.TestCase ):
         2: B* = A and B
         3: C* = not C
         """
-        eng  = boolean.Model( mode='sync', text=text )
-        eng.initialize( missing= boolean.util.allfalse, defaults=dict(A=True, B=True) )
+        eng  = boolean2.Model(mode='sync', text=text)
+        eng.initialize(missing= boolean2.util.false, defaults=dict(A=True, B=True))
         eng.iterate( steps=10 )
         EQ( eng.start.A, True )
         EQ( eng.start.B, True )
@@ -79,7 +79,7 @@ class EngineTest( unittest.TestCase ):
         2: B* = A and B
         3: C* = not C
         """
-        eng  = boolean.Model( mode='sync', text=text )
+        eng  = boolean2.Model(mode='sync', text=text)
         eng.initialize()
         eng.iterate( steps=5 )
         
@@ -138,7 +138,7 @@ class EngineTest( unittest.TestCase ):
         EQ = self.assertEqual
 
         # valid nodes
-        nodes  = string.uppercase[:]
+        nodes  = string.ascii_uppercase[:]
 
         #
         # Initializes a bunch of nodes to random values
@@ -208,9 +208,9 @@ class EngineTest( unittest.TestCase ):
         # execute the code in python for a number of steps
         # having too many steps is bad as it falls into a steady state
         steps = 4
-        exec init_text
+        exec(init_text)
         for i in range( steps ):
-            exec py_text in locals()
+            exec(py_text in locals())
         
         # see the full text here
         #print full_text

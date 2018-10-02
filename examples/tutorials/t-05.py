@@ -31,7 +31,7 @@ D* = B and C
 
 coll  = util.Collector()
 for i in range(50):
-    model = boolean2.Model( text, mode='async')
+    model = boolean2.Model(text, mode='async')
     model.initialize()
     model.iterate( steps=15 ) 
 

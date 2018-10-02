@@ -18,7 +18,7 @@ D = True
 1: D* = B and C
 """
 
-model = boolean2.Model( text, mode='plde')
+model = boolean2.Model(text, mode='plde')
 model.initialize()
 model.iterate( fullt=7, steps=150 )
 

@@ -47,7 +47,7 @@ text = boolean2.modify_states(text, turnon=on, turnoff=off)
 seen = {}
 
 for i in range(10):
-    model = boolean2.Model( text, mode='sync')
+    model = boolean2.Model(text, mode='sync')
     model.initialize()
     model.iterate( steps=20 )
 

@@ -1,63 +1,63 @@
 """
 Main tokenizer.
 """
-from itertools import *
-import sys, random
-import util
-import ply.lex as lex
+
+from boolean2 import util
+from boolean2.ply import lex
+
 
 class Lexer:
     """
-    Lexer for boolean rules
+    Lexer for boolean2 rules
     """
-    literals = '=*,' 
+    literals = '=*,'
 
     tokens = (
-        'LABEL', 'ID','STATE', 'ASSIGN', 'EQUAL',
-        'AND', 'OR', 'NOT', 
-        'NUMBER', 'LPAREN','RPAREN', 'COMMA',
+        'LABEL', 'ID', 'STATE', 'ASSIGN', 'EQUAL',
+        'AND', 'OR', 'NOT',
+        'NUMBER', 'LPAREN', 'RPAREN', 'COMMA',
     )
 
-    reserved = { 
-       'and'    : 'AND',
-       'or'     : 'OR',
-       'not'    : 'NOT',
-       'True'   : 'STATE',
-       'False'  : 'STATE',
-       'Random' : 'STATE',
+    reserved = {
+        'and'   : 'AND',
+        'or'    : 'OR',
+        'not'   : 'NOT',
+        'True'  : 'STATE',
+        'False' : 'STATE',
+        'Random': 'STATE',
     }
 
     def __init__(self, **kwargs):
         # nothing here yet
         self.lexer = lex.lex(object=self, **kwargs)
 
-    def t_ID( self, t):
+    def t_ID(self, t):
         "[a-zA-Z_\+\-][a-zA-Z_0-9\+\-]*"
 
         # check for reserved words
-        t.type = self.reserved.get( t.value, 'ID')    
+        t.type = self.reserved.get(t.value, 'ID')
         return t
 
-    def t_LABEL (self, t):
+    def t_LABEL(self, t):
         "[0-9][0-9]*:"
         t.value = int(t.value[:-1])
         return t
-   
+
     def t_NUMBER(self, t):
         "[\+-]*\d+\.?\d*"
         try:
             t.value = float(t.value)
         except ValueError:
-            util.error( "value too large", t.value )
+            util.error("value too large", t.value)
         return t
 
-    t_LPAREN  = r'\('
-    t_RPAREN  = r'\)'
-    t_ASSIGN  = r'\*'
-    t_EQUAL   = r'='
-    t_COMMA   = r','
+    t_LPAREN = r'\('
+    t_RPAREN = r'\)'
+    t_ASSIGN = r'\*'
+    t_EQUAL = r'='
+    t_COMMA = r','
 
-    t_ignore  = ' \t'
+    t_ignore = ' \t'
     t_ignore_COMMENT = r'\#.*'
 
     def t_newline(self, t):
@@ -67,14 +67,14 @@ class Lexer:
 
     def t_error(self, t):
         "Error message"
-        msg = "lexer error in '%s' at '%s'" % (self.last, t.value)  
-        util.error( msg ) 
+        msg = "lexer error in '%s' at '%s'" % (self.last, t.value)
+        util.error(msg)
 
-    def tokenize_line(self, line ):
+    def tokenize_line(self, line):
         "Runs the lexer a single line retutns a list of tokens"
         tokens = []
         self.last = line
-        self.lexer.input( line )
+        self.lexer.input(line)
         while 1:
             t = self.lexer.token()
             if t:
@@ -82,75 +82,82 @@ class Lexer:
             else:
                 break
         return tokens
-    
+
     def tokenize_text(self, text):
         "Runs the lexer on text and returns a list of lists of tokens"
-        return map( self.tokenize_line, util.split(text) )
+        return list(map(self.tokenize_line, util.split(text)))
 
-def init_tokens( tokenlist ):
+
+def init_tokens(tokenlist):
     """
     Returns elments of the list that are initializers 
     """
-    def cond( elem ):
-        return elem[1].type == 'EQUAL'
-    return filter( cond, tokenlist)
 
-def label_tokens( tokenlist ):
+    def cond(elem):
+        return elem[1].type == 'EQUAL'
+
+    return list(filter(cond, tokenlist))
+
+
+def label_tokens(tokenlist):
     """
     Returns elements where the first token is a LABEL
     (updating rules with labels)
     """
-    def cond( elem ):
-        return elem[0].type == 'LABEL'
-    return filter( cond, tokenlist)
 
-def async_tokens( tokenlist ):
+    def cond(elem):
+        return elem[0].type == 'LABEL'
+
+    return list(filter(cond, tokenlist))
+
+
+def async_tokens(tokenlist):
     """
     Returns elements where the second token is ASSIGN
     (updating rules with no LABELs)
     """
-    def cond( elem ):
-        return elem[1].type == 'ASSIGN'
-    return filter( cond, tokenlist)
 
-def update_tokens( tokenlist ):
+    def cond(elem):
+        return elem[1].type == 'ASSIGN'
+
+    return list(filter(cond, tokenlist))
+
+
+def update_tokens(tokenlist):
     """
     Returns tokens that perform updates
     """
-    def cond( elem ):
-        return elem[1].type == 'ASSIGN' or elem[2].type == 'ASSIGN'
-    return filter( cond, tokenlist)
 
-def get_nodes( tokenlist ):
+    def cond(elem):
+        return elem[1].type == 'ASSIGN' or elem[2].type == 'ASSIGN'
+
+    return list(filter(cond, tokenlist))
+
+
+def get_nodes(tokenlist):
     """
     Flattens the list of tokenlist and returns the value of all ID tokens
     """
-    
-    def cond ( token ):     
-        return token.type == 'ID'
-    
-    def get( token):
-        return token.value
-
-    nodes = map(get, filter( cond, chain( *tokenlist )))
-    nodes = set(nodes)
-    util.check_case( nodes )
+    nodes = set([j.value for i in tokenlist for j in i if j.type == "ID"])
+    util.check_case(nodes)
     return nodes
 
-def tok2line( tokens ):
+
+def tok2line(tokens):
     """
     Turns a list of tokens into a line that can be parsed again
     """
-    elems = [ str(t.value) for t in tokens ]
+    elems = [str(t.value) for t in tokens]
     if tokens[0].type == 'LABEL':
         elems[0] = elems[0] + ':'
 
-    return ' '.join( elems )
+    return ' '.join(elems)
+
 
 def test():
     """
     Main testrunnner
-    >>> import util
+    >>> from boolean2 import util
     >>>
     >>> text  = '''
     ... A = B = True
@@ -175,49 +182,53 @@ def test():
     >>> get_nodes( tokens )
     set(['A', 'C', 'B', 'E', 'F'])
     """
-    
+
     # runs the local suite
     import doctest
-    doctest.testmod( optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE )
+    doctest.testmod(
+        optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE)
 
-def tokenize( text ):
+
+def tokenize(text):
     "A one step tokenizer"
     lexer = Lexer()
-    return lexer.tokenize_text( text )
+    return lexer.tokenize_text(text)
 
-def modify_states( text, turnon=[], turnoff=[] ):
+
+def modify_states(text, turnon=[], turnoff=[]):
     """
     Turns nodes on and off and comments out lines 
     that contain assignment to any of the nodes 
     
     Will use the main lexer.
     """
-    turnon  = util.as_set( turnon )
-    turnoff = util.as_set( turnoff )
-    tokens  = tokenize( text )
+    turnon = util.as_set(turnon)
+    turnoff = util.as_set(turnoff)
+    tokens = tokenize(text)
 
-    init = init_tokens( tokens )
-    init_lines = map(tok2line, init)
+    init = init_tokens(tokens)
+    init_lines = list(map(tok2line, init))
 
     # override the initial values
-    init_lines.extend( [ '%s=True'  % node for node in turnon  ] )
-    init_lines.extend( [ '%s=False' % node for node in turnoff ] )
+    init_lines.extend(['%s=True' % node for node in turnon])
+    init_lines.extend(['%s=False' % node for node in turnoff])
 
     alter = turnon | turnoff
-    update = update_tokens ( tokens )
+    update = update_tokens(tokens)
     update_lines = []
     for token in update:
-        line = tok2line( token)
+        line = tok2line(token)
         if token[0].value in alter or token[1].value in alter:
             line = '#' + line
-        update_lines.append( line )
+        update_lines.append(line)
 
     all = init_lines + update_lines
-    return '\n'.join( all )
+    return '\n'.join(all)
+
 
 if __name__ == '__main__':
     test()
-    
+
     lexer = Lexer()
     text = """
         A = B = C = False
@@ -229,7 +240,5 @@ if __name__ == '__main__':
         D* = A
 
     """
-    
-    print modify_states( text, turnon=['A', 'B'], turnoff=['C'] )
 
-    
+    print(modify_states(text, turnon=['A', 'B'], turnoff=['C']))

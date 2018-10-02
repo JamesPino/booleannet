@@ -5,8 +5,8 @@ from itertools import *
 # import path fixup
 sys.path.append( '..' )
 
-import boolean
-from boolean.functional import *
+import boolean2
+from boolean2.functional import *
 
 #
 # helper functions
@@ -22,7 +22,7 @@ def get_states( mode, text, steps, missing=None):
     """
     Helper function to generate the states
     """
-    eng  = boolean.Model( mode=mode, text=text )
+    eng  = boolean2.Model(mode=mode, text=text)
     eng.initialize( missing=missing )
     eng.iterate( steps=steps )
     return eng.states
@@ -41,7 +41,7 @@ class ModelTest( unittest.TestCase ):
         B* = A and B
         C* = not C
         """
-        eng  = boolean.Model( mode='plde', text=text )
+        eng  = boolean2.Model(mode='plde', text=text)
         eng.initialize()
         eng.iterate( fullt=1, steps=10 )
         EQ( len(eng.data), 3)
@@ -59,8 +59,8 @@ class ModelTest( unittest.TestCase ):
         B* = A and B
         C* = not C
         """
-        eng  = boolean.Model( mode='sync', text=text )
-        eng.initialize( missing= boolean.util.allfalse, defaults=dict(A=True, B=True) )
+        eng  = boolean2.Model(mode='sync', text=text)
+        eng.initialize(missing= boolean2.util.allfalse, defaults=dict(A=True, B=True))
         eng.iterate( steps=10 )
         EQ( eng.start.A, True )
         EQ( eng.start.B, True )
@@ -79,7 +79,7 @@ class ModelTest( unittest.TestCase ):
         B* = A and B
         C* = not C
         """
-        eng  = boolean.Model( mode='sync', text=text )
+        eng  = boolean2.Model(mode='sync', text=text)
         eng.initialize()
         eng.iterate( steps=5 )
         

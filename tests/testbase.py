@@ -22,7 +22,7 @@ def get_states( mode, text, steps, missing=None):
     """
     Helper function that generates the states based on 
     """
-    model  = boolean2.Model( mode=mode, text=text )
+    model  = boolean2.Model(mode=mode, text=text)
     model.initialize( missing=missing )
     model.iterate( steps=steps )
     return model.states

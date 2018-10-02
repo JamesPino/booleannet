@@ -17,7 +17,7 @@ def simulation( ):
     trans = network.TransGraph( logfile='timemodel.log', verbose=True )
 
     # create the model, you may use a text string or a filename
-    model = boolean2.Model( text='timemodel.txt', mode='time')
+    model = boolean2.Model(text='timemodel.txt', mode='time')
 
     
     # here we generates all initial states
